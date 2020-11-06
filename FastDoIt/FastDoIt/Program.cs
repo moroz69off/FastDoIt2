@@ -22,6 +22,7 @@ namespace FastDoIt
 
             GetDriver();
 
+
             Actor actor = new Actor("o_0");
                 Console.ReadLine();
         }
@@ -32,16 +33,16 @@ namespace FastDoIt
             try
             {
                 var dir = Directory.GetCurrentDirectory();
-                var files = Directory.GetFiles(dir, "webdriver.exe");
-                if (files[0] != "webdriver.exe") 
+                var files = Directory.GetFiles(dir, "chromedriver.exe");
+                if (files[0] != "chromedriver.exe") 
 					{
-						Console.WriteLine($"Current directory ({dir}) should contains file \"webdriver.exe\"");
+						Console.WriteLine($"Current directory ({dir}) should contains file \"chromedriver.exe\"");
 						Console.WriteLine($"We will download from the Internet");
 					}
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"File \"webdriver.exe\" not found\n * * * \nSystem error message:\n\t{ex.Message}", "File driwer error", MessageBoxButtons.OK,MessageBoxIcon.Error);
+                MessageBox.Show($"File \"chromedriver.exe\" not found\n * * * \nSystem error message:\n\t{ex.Message}", "File driwer error", MessageBoxButtons.OK,MessageBoxIcon.Error);
                 GetChromeDriver(path);
             }
         }
