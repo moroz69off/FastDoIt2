@@ -6,6 +6,7 @@ using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO.Compression;
 
 namespace FastDoIt
 {
@@ -29,12 +30,13 @@ namespace FastDoIt
 
         private static void GetDriver()
         {
-            string path = "https://chromedriver.storage.googleapis.com/87.0.4280.20/chromedriver_win32.zip"; // Quick reference from selenium.dev/documentation/en/webdriver/driver_requirements/
+            string path = "https://chromedriver.storage.googleapis.com/87.0.4280.20/chromedriver_win32.zip"; // Quick reference from selenium.dev/documentation/en/webdriver/driver_requirements/ ***** lat 87.0.4280.20 - 05.11.2020
             try
             {
                 var dir = Directory.GetCurrentDirectory();
                 var files = Directory.GetFiles(dir, "chromedriver.exe");
-                if (files[0] != "chromedriver.exe") 
+
+                if (files[0] != "chromedriver.exe" || files.Length == 0) 
 					{
 						Console.WriteLine($"Current directory ({dir}) should contains file \"chromedriver.exe\"");
 						Console.WriteLine($"We will download from the Internet");
@@ -42,7 +44,7 @@ namespace FastDoIt
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"File \"chromedriver.exe\" not found\n * * * \nSystem error message:\n\t{ex.Message}", "File driwer error", MessageBoxButtons.OK,MessageBoxIcon.Error);
+                Console.WriteLine(ex.Message + ex.StackTrace);
                 GetChromeDriver(path);
             }
         }
@@ -50,8 +52,10 @@ namespace FastDoIt
         private static void GetChromeDriver(string path)
         {
             Console.WriteLine("Dounloading driver from https://chromedriver.storage.googleapis.com");
-            string folderPath = @"C:\WebDriver\tmp\";
-            string fileName = @"ChromeDriver.zip";
+            string folderPath = @"C:\WebDriver\tmp\", fileName = @"ChromeDriver.zip";
+
+            if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+            
 
             Download();
             void Download()
@@ -62,11 +66,10 @@ namespace FastDoIt
                     {
                         client.DownloadFile(new Uri(path), folderPath + fileName);
                         Console.WriteLine($"File {fileName} downloaded to {folderPath}");
-
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(ex.Message+ex.StackTrace);
+                        Console.WriteLine(ex.Message + ex.StackTrace);
                     }
                 }
             }
@@ -74,7 +77,11 @@ namespace FastDoIt
             UnZip();
             void UnZip()
             {
+                if (!Directory.Exists(@"C:\WebDriver\bin\")) Directory.CreateDirectory(@"C:\WebDriver\bin\");
+                if (File.Exists(@"C:\WebDriver\bin\chromedriver.exe")) File.Delete(@"C:\WebDriver\bin\chromedriver.exe");
                 
+                ZipFile.ExtractToDirectory(folderPath + fileName, @"C:\WebDriver\bin\");
+                Console.WriteLine(@"File chromedriver.exe unzip to C:\WebDriver\bin\");
             }
         }
 
