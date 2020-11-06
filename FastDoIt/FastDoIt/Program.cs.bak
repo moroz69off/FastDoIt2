@@ -34,7 +34,7 @@ namespace FastDoIt
                 var files = Directory.GetFiles(dir, "webdriver.exe");
                 if (files[0] != "webdriver.exe") 
 					{
-						string path = "https://chromedriver.storage.googleapis.com/87.0.4280.20/chromedriver_win32.zip"; // Quick reference from https://www.selenium.dev/documentation/en/webdriver/driver_requirements/
+						string path = "https://chromedriver.storage.googleapis.com/70.0.3538.16/chromedriver_win32.zip"; // Quick reference from https://www.selenium.dev/documentation/en/webdriver/driver_requirements/
 						Console.WriteLine($"Current directory ({dir}) should contains file \"webdriver.exe\"");
 						Console.WriteLine($"We will download from the Internet");
 						GetDriver(path);
