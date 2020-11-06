@@ -28,21 +28,52 @@ namespace FastDoIt
 
         private static void GetDriver()
         {
+            string path = "https://chromedriver.storage.googleapis.com/87.0.4280.20/chromedriver_win32.zip"; // Quick reference from selenium.dev/documentation/en/webdriver/driver_requirements/
             try
             {
                 var dir = Directory.GetCurrentDirectory();
                 var files = Directory.GetFiles(dir, "webdriver.exe");
                 if (files[0] != "webdriver.exe") 
 					{
-						string path = "https://chromedriver.storage.googleapis.com/87.0.4280.20/chromedriver_win32.zip"; // Quick reference from https://www.selenium.dev/documentation/en/webdriver/driver_requirements/
 						Console.WriteLine($"Current directory ({dir}) should contains file \"webdriver.exe\"");
 						Console.WriteLine($"We will download from the Internet");
-						GetDriver(path);
 					}
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"File \"webdriver.exe\" not found\n * * * \nSystem error message:\n\t{ex.Message}", "File driwer error", MessageBoxButtons.OK,MessageBoxIcon.Error);
+                GetChromeDriver(path);
+            }
+        }
+
+        private static void GetChromeDriver(string path)
+        {
+            Console.WriteLine("Dounloading driver from https://chromedriver.storage.googleapis.com");
+            string folderPath = @"C:\WebDriver\tmp\";
+            string fileName = @"ChromeDriver.zip";
+
+            Download();
+            void Download()
+            {
+                using (System.Net.WebClient client = new System.Net.WebClient())
+                {
+                    try
+                    {
+                        client.DownloadFile(new Uri(path), folderPath + fileName);
+                        Console.WriteLine($"File {fileName} downloaded to {folderPath}");
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message+ex.StackTrace);
+                    }
+                }
+            }
+
+            UnZip();
+            void UnZip()
+            {
+                
             }
         }
 
