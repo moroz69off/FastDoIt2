@@ -23,8 +23,7 @@ namespace FastDoIt
 
             GetDriver();
 
-
-            Actor actor = new Actor("o_0");
+            FActor actor = new FActor("o_0");
                 Console.ReadLine();
         }
 
@@ -83,26 +82,6 @@ namespace FastDoIt
                 ZipFile.ExtractToDirectory(folderPath + fileName, @"C:\WebDriver\bin\");
                 Console.WriteLine(@"File chromedriver.exe unzip to C:\WebDriver\bin\");
             }
-        }
-
-        class Actor
-        {
-            public Actor()
-            {
-                if (true)
-                {
-                    isGoodResult = true;
-                }
-            }
-
-            public Actor(string result)
-            {
-                if (result=="o_0")
-                {
-                    isGoodResult = true;
-                }
-            }
-            bool isGoodResult { get; set; } = false;
         }
     }
 }
