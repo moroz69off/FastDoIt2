@@ -24,7 +24,12 @@ namespace FastDoIt
             GetDriver();
 
             FActor actor = new FActor("o_0");
-                Console.ReadLine();
+
+            var result = actor.GetResult("GetResult method (string)");
+
+            Console.WriteLine(result);
+
+            Console.ReadLine();
         }
 
         private static void GetDriver()

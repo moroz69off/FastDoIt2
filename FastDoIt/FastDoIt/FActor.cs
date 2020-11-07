@@ -14,7 +14,14 @@ namespace FastDoIt
         {
             string result = link; // todo
 
-            Console.WriteLine(result);
+            Console.WriteLine("\"FActot\" unit created");
+        }
+
+        public string GetResult(string str)
+        {
+            string result = str;
+
+            return result;
         }
     }
 }
