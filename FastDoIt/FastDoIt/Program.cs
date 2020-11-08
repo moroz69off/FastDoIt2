@@ -25,7 +25,7 @@ namespace FastDoIt
 
             FActor actor = new FActor("o_0");
 
-            var result = actor.GetResult("GetResult method (string)");
+            string result = actor.GetResult("GetResult method (string)");
 
             Console.WriteLine(result);
 

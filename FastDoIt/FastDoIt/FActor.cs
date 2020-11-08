@@ -14,7 +14,7 @@ namespace FastDoIt
         {
             string result = link; // todo
 
-            Console.WriteLine("\"FActot\" unit created");
+            Console.WriteLine($"\"FActot\" unit created\noutput: {result}");
         }
 
         public string GetResult(string str)
