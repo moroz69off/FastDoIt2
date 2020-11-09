@@ -17,6 +17,8 @@ namespace FastDoIt
             Console.WriteLine($"\"FActot\" unit created\noutput: {result}");
         }
 
+        string driverId { get; set; } = "";
+
         public string GetResult(string str)
         {
             string result = str;

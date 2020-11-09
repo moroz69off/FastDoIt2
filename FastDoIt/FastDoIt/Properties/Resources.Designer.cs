@@ -69,5 +69,14 @@ namespace FastDoIt.Properties {
                 return ((System.Drawing.Icon)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на https://kith.com/.
+        /// </summary>
+        internal static string kith {
+            get {
+                return ResourceManager.GetString("kith", resourceCulture);
+            }
+        }
     }
 }

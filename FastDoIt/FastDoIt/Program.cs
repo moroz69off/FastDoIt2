@@ -12,6 +12,8 @@ namespace FastDoIt
 {
     class Program
     {
+        private static List<string> links;
+
         static void Main(string[] args)
         {
             using (ResourceWriter RW = new ResourceWriter(@".\FastResources.resx"))
@@ -23,6 +25,15 @@ namespace FastDoIt
 
             GetDriver();
 
+            GetChromeBro();
+
+            links = GetLinks();
+
+            var store = GoToTheStoreForPedals("");
+
+            var stoResult = store.IsCanceled;
+            Console.WriteLine(stoResult);
+
             FActor actor = new FActor("o_0");
 
             string result = actor.GetResult("GetResult method (string)");
@@ -30,6 +41,33 @@ namespace FastDoIt
             Console.WriteLine(result);
 
             Console.ReadLine();
+        }
+        private static List<string> GetLinks()
+        {
+
+            throw new NotImplementedException();
+        }
+
+        async static Task GoToTheStoreForPedals(string link)
+        {
+            await PushKithButton(link);
+            throw new NotImplementedException();
+
+            Task PushKithButton(string model)
+            {
+                //throw new NotImplementedException();
+                return new Task(acton);
+            }
+            void acton()
+            {
+                
+            }
+        }
+
+        private static void GetChromeBro()
+        {
+            Console.WriteLine("Install Chrome browser,\nbro...");
+            //throw new NotImplementedException();
         }
 
         private static void GetDriver()
