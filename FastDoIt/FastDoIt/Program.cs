@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO.Compression;
 
+
 namespace FastDoIt
 {
     class Program
@@ -18,7 +19,7 @@ namespace FastDoIt
         {
             using (ResourceWriter RW = new ResourceWriter(@".\FastResources.resx"))
             {// add resources here
-                RW.AddResource("isActionGoodResult", false);
+                RW.AddResource("isActionGoodResult", false); // example
             }
 
             Console.Title = "Fast DO IT";
@@ -29,7 +30,7 @@ namespace FastDoIt
 
             links = GetLinks();
 
-            var store = GoToTheStoreForPedals("");
+            var store = GoToTheStoreForPedalsAsync("");
 
             var stoResult = store.IsCanceled;
             Console.WriteLine(stoResult);
@@ -43,12 +44,11 @@ namespace FastDoIt
             Console.ReadLine();
         }
         private static List<string> GetLinks()
-        {
-
-            throw new NotImplementedException();
+        {// get links from file
+            return new List<string>();
         }
 
-        async static Task GoToTheStoreForPedals(string link)
+        async static Task GoToTheStoreForPedalsAsync(string link)
         {
             await PushKithButton(link);
             throw new NotImplementedException();
@@ -60,7 +60,7 @@ namespace FastDoIt
             }
             void acton()
             {
-                
+                ChroBro CHRO = new ChroBro(FastDoIt.Properties.Resources.kith);
             }
         }
 
