@@ -57,6 +57,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="profiles.csv" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="FastIcon2.ico" />
