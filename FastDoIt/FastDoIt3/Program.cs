@@ -12,22 +12,31 @@ namespace FastDoIt3
     class Program
     {
         public static string sessionId { get; private set; }
+        public static int processId { get; private set; }
 
+        //backToShop glDefaultBtn
+        //backToShop glDefaultBtn
         static void Main(string[] args)
         {
-            IWebDriver driver = new ChromeDriver();
+            ChromeDriverService chromeDriverService = ChromeDriverService.CreateDefaultService();
+            chromeDriverService.HideCommandPromptWindow = true;
+            chromeDriverService.SuppressInitialDiagnosticInformation = true;
+            processId = chromeDriverService.ProcessId;
+            Console.WriteLine($"Process Id: {processId}");
 
             ChromeOptions options = new ChromeOptions();
-            options.SetLoggingPreference("Browser", LogLevel.Off);
-            options.SetLoggingPreference("Driver" , LogLevel.Off);
+            options.SetLoggingPreference("Browser", LogLevel.All);
+            options.SetLoggingPreference("Driver" , LogLevel.All);
+            options.AddArgument("--disable-infobars");
 
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            IWebDriver driver = new ChromeDriver(chromeDriverService, options);
+            _ = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 
             driver.Manage().Window.Maximize();
 
-            driver.Navigate().GoToUrl("https://kith.com");
+            driver.Navigate().GoToUrl("https://yumor.xyz");
             sessionId = driver.CurrentWindowHandle;
-            Console.WriteLine(sessionId);
+            Console.WriteLine($"sessionId: {sessionId}");
             Console.ReadLine();
         }
     }
