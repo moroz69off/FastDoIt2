@@ -20,46 +20,57 @@ namespace FastDoIt3
         //backToShop glDefaultBtn
         static void Main(string[] args)
         {
-            List<string> profileInfoList = GetProfiles("profiles.csv", 1); // 1 - fisrt profile in profiles list (for multiprofiles work)
+            Console.Title = "FastDoIt";
+            List<string> profileInfoList = GetProfile("profiles.csv", 1); // 1 - fisrt profile in profiles list (for multiprofiles work)
+            List<string> links = GetLinks();
 
             ChromeDriverService chromeDriverService = AddService();
 
-            ChromeOptions options = new ChromeOptions();
-            options.SetLoggingPreference("Browser", LogLevel.All);
-            options.SetLoggingPreference("Driver", LogLevel.All);
-            options.AddArguments("--disable-infobars");
-            
+            ChromeOptions options = InitOptions();
+
             object preference = null;
             options.AddLocalStatePreference("", preference);
 
             IWebDriver driver = new ChromeDriver(chromeDriverService, options);
             _ = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 
-            sessionId = driver.CurrentWindowHandle;
-            Console.WriteLine($"sessionId: {sessionId}");
-
             driver.Manage().Window.Maximize();
 
-            driver.Navigate().GoToUrl("https://kith.com/collections/stone-island-ghost-capsule/products/simo7315s02f6-v0070");
-
+            driver.Navigate().GoToUrl(links[1]);
+            //https://kith.com/products/nkda1469-200
+            //https://kith.com/collections/stone-island-ghost-capsule/products/simo7315s02f6-v0070
 
 
             driver.Quit();
             Console.ReadLine();
         }
 
-        private static List<string> GetProfiles(string profilesPath, int profileNum)
+        private static List<string> GetLinks()
+        {
+            return new List<string>(File.ReadAllLines("links").ToList());
+        }
+
+        private static ChromeOptions InitOptions()
+        {
+            ChromeOptions options = new ChromeOptions();
+            options.SetLoggingPreference("Browser", LogLevel.All); // temp
+            options.SetLoggingPreference("Driver", LogLevel.All); // temp
+                                                                  //options.AddArguments("--disable-infobars"); // temp
+            return options;
+        }
+        /// <summary>
+        /// Get profile information from "profiles.csv" file by index
+        /// </summary>
+        /// <param name="profilesPath">string, path to "profiles.csv" file</param>
+        /// <param name="profileNum">index of profile</param>
+        /// <returns>List<string> profile data</returns>
+        private static List<string> GetProfile(string profilesPath, int profileNum)
         {
             List<List<string>> profilesData = new List<List<string>>();
-            List<string> vs = new List<string>(File.ReadAllLines("profiles.csv"));
+            List<string> vs = new List<string>(File.ReadAllLines(profilesPath));
             for (int i = 0; i < vs.Count; i++)
             {
-                string[] v = vs[i].Split(new char[] { ' ' });
-                for (int j = 0; j < v.Length; j++)
-                {
-                    vs.Add(v[j]);
-                }
-                profilesData.Add(v.ToList());
+                profilesData.Add(vs[i].Split(new char[] { ',' }).ToList());
             }
             return new List<string>(profilesData[profileNum]);
         }
@@ -69,8 +80,6 @@ namespace FastDoIt3
             ChromeDriverService chromeDriverService = ChromeDriverService.CreateDefaultService();
             chromeDriverService.HideCommandPromptWindow = true;
             chromeDriverService.SuppressInitialDiagnosticInformation = true;
-            processId = chromeDriverService.ProcessId;
-            Console.WriteLine($"Process Id: {processId}");
             return chromeDriverService;
         }
     }
