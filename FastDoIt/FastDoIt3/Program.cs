@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,8 @@ namespace FastDoIt3
         //backToShop glDefaultBtn
         static void Main(string[] args)
         {
+            List<string> profileInfoList = GetProfiles("profiles.csv", 1); // 1 - fisrt profile in profiles list (for multiprofiles work)
+
             ChromeDriverService chromeDriverService = AddService();
 
             ChromeOptions options = new ChromeOptions();
@@ -43,6 +46,22 @@ namespace FastDoIt3
 
             driver.Quit();
             Console.ReadLine();
+        }
+
+        private static List<string> GetProfiles(string profilesPath, int profileNum)
+        {
+            List<List<string>> profilesData = new List<List<string>>();
+            List<string> vs = new List<string>(File.ReadAllLines("profiles.csv"));
+            for (int i = 0; i < vs.Count; i++)
+            {
+                string[] v = vs[i].Split(new char[] { ' ' });
+                for (int j = 0; j < v.Length; j++)
+                {
+                    vs.Add(v[j]);
+                }
+                profilesData.Add(v.ToList());
+            }
+            return new List<string>(profilesData[profileNum]);
         }
 
         private static ChromeDriverService AddService()
