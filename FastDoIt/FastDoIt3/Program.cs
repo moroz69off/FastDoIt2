@@ -15,12 +15,11 @@ namespace FastDoIt3
         public static string sessionId { get; private set; }
         public static int processId { get; private set; }
 
-        //backToShop glDefaultBtn
-        //https://kith.com/collections/stone-island-ghost-capsule/products/simo7315s02f6-v0070
-        //backToShop glDefaultBtn
+        [Obsolete]
         static void Main(string[] args)
         {
             Console.Title = "FastDoIt";
+
             List<string> profileInfoList = GetProfile("profiles.csv", 1); // 1 - fisrt profile in profiles list (for multiprofiles work)
             List<string> links = GetLinks();
 
@@ -36,11 +35,55 @@ namespace FastDoIt3
 
             driver.Manage().Window.Maximize();
 
-            driver.Navigate().GoToUrl(links[1]);
-            //https://kith.com/products/nkda1469-200
-            //https://kith.com/collections/stone-island-ghost-capsule/products/simo7315s02f6-v0070
+            driver.Navigate().GoToUrl(links[0]);
+
+            // проверить, что сервер отдал страницу
+            if (true)
+            {
+                try
+                {
+                    IWebElement webElement = driver.FindElement(By.ClassName("goAccept"));
+                    webElement.Click();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
+                }
 
 
+                #region automation
+                //backToShop
+                try
+                {
+                    IWebElement webElement = driver.FindElement(By.ClassName("backToShop"));
+                    webElement.Click();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
+                } // backToShop btn
+
+                try
+                {///html/body/div[3]/main/div[2]/section[1]/div[4]/form/div[2]/div[3]/input
+                    string Xpath = "html/body/div[3]/main/div[2]/section[1]/div[4]/form/div[2]/div[3]/input";
+                    var webElement = driver.FindElements(By.ClassName("swatch-element"));
+                    for (int i = 0; i < webElement.Count; i++)
+                    {
+                        if (webElement[i].Text==profileInfoList[0])
+                        {
+                            webElement[i].Click();
+                        }
+                    }
+                    //var spanClickable = webElement.FindElement(By.TagName("span"));
+                    //spanClickable.Click();
+                  //webElement.Submit();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
+                } // size select
+                #endregion automation
+            }
             driver.Quit();
             Console.ReadLine();
         }
@@ -54,10 +97,11 @@ namespace FastDoIt3
         {
             ChromeOptions options = new ChromeOptions();
             options.SetLoggingPreference("Browser", LogLevel.All); // temp
-            options.SetLoggingPreference("Driver", LogLevel.All); // temp
-                                                                  //options.AddArguments("--disable-infobars"); // temp
+            options.SetLoggingPreference("Driver", LogLevel.All);  // temp
+          //options.AddArguments("--disable-infobars"); // temp
             return options;
         }
+
         /// <summary>
         /// Get profile information from "profiles.csv" file by index
         /// </summary>
@@ -78,7 +122,7 @@ namespace FastDoIt3
         private static ChromeDriverService AddService()
         {
             ChromeDriverService chromeDriverService = ChromeDriverService.CreateDefaultService();
-            chromeDriverService.HideCommandPromptWindow = true;
+            chromeDriverService.HideCommandPromptWindow = false;
             chromeDriverService.SuppressInitialDiagnosticInformation = true;
             return chromeDriverService;
         }
