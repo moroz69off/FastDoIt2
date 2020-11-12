@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
+using System.Collections.ObjectModel;
 
 namespace FastDoIt3
 {
@@ -48,8 +49,7 @@ namespace FastDoIt3
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
-                }
-
+                }// accept cookie
 
                 #region automation
                 //backToShop
@@ -64,14 +64,13 @@ namespace FastDoIt3
                 } // backToShop btn
 
                 try
-                {///html/body/div[3]/main/div[2]/section[1]/div[4]/form/div[2]/div[3]/input
-                    string Xpath = "html/body/div[3]/main/div[2]/section[1]/div[4]/form/div[2]/div[3]/input";
-                    var webElement = driver.FindElements(By.ClassName("swatch-element"));
-                    for (int i = 0; i < webElement.Count; i++)
+                {
+                    ReadOnlyCollection<IWebElement> webElements = driver.FindElements(By.ClassName("swatch-element"));
+                    for (int i = 0; i < webElements.Count; i++)
                     {
-                        if (webElement[i].Text==profileInfoList[0])
+                        if (webElements[i].Text==profileInfoList[0])
                         {
-                            webElement[i].Click();
+                            webElements[i].Click();
                         }
                     }
                     //var spanClickable = webElement.FindElement(By.TagName("span"));
@@ -82,10 +81,54 @@ namespace FastDoIt3
                 {
                     Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
                 } // size select
+
+                try
+                {
+                    var temp = driver.FindElement(By.ClassName("product-form__add-to-cart"));
+                    driver.FindElement(By.ClassName("product-form__add-to-cart")).Click();
+                    System.Threading.Thread.Sleep(1000);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
+                }//add-to-cart btn
+
+                do
+                {
+                    try
+                    {
+                        var cartContainer = driver.FindElement(By.Id("CartContainer"));
+                        var btns = cartContainer.FindElements(By.TagName("button"));
+                        for (int i = 0; i < btns.Count; i++)
+                        {
+                            if (btns[i].Text == "CHECKOUT")
+                            {
+                                btns[i].Click();
+                                if (driver.Url == "https://kith.com/pages/international-checkout#Global-e_International_Checkout")
+                                {
+                                    DoPay();
+                                    driver.Quit();
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
+                    }
+                } while (driver.Url != "https://kith.com/pages/international-checkout#Global-e_International_Checkout");
                 #endregion automation
             }
+
+
             driver.Quit();
             Console.ReadLine();
+        }
+
+        private static void DoPay()
+        {
+            Console.WriteLine("DoPay OK"); // to do
         }
 
         private static List<string> GetLinks()
