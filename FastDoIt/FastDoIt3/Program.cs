@@ -93,10 +93,7 @@ namespace FastDoIt3
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
-                } // size select
+                catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); } // size select
 
                 try
                 {
@@ -119,7 +116,7 @@ namespace FastDoIt3
                             if (btns[i].Text == "CHECKOUT")
                             {
                                 btns[i].Click();
-                                System.Threading.Thread.Sleep(4444);
+                                System.Threading.Thread.Sleep(3333);
                                 DoPay(driver);
                                 return;
                             }
@@ -146,7 +143,7 @@ namespace FastDoIt3
         private static void DoPay(IWebDriver driver)
         {
             Console.WriteLine("Fill form...");
-            //ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
+
             WebDriverWait wait = new WebDriverWait(clock, driver,
                 TimeSpan.FromSeconds(5),
                 TimeSpan.FromMilliseconds(100)
@@ -243,8 +240,16 @@ namespace FastDoIt3
 
             try
             {
-                var buttonka = driver.FindElement(By.XPath("/html/body/div[2]/div[2]/div[4]/div/div[2]/div/button"));
-                buttonka.Click();
+                driver.SwitchTo().ParentFrame();
+                var btns = driver.FindElements(By.TagName("button"));
+                for (int i = 0; i < btns.Count; i++)
+                {
+                    if (btns[i].Text == "PAY AND PLACE ORDER")
+                    {
+                        btns[i].Click();
+                        return;
+                    }
+                }
                 Console.WriteLine("button Id(\"btnPay\") cliked");
             }
             catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
