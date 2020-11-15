@@ -41,11 +41,7 @@ namespace FastDoIt3
 
             #region // check that the server has given the good page
             bool isAgoodResponse = IsGoodResponse(links[0]);
-
-            bool IsGoodResponse(string link)
-            {
-                return true;
-            }
+            bool IsGoodResponse(string link) { return true; }
 
             WebDriverWait wait = new WebDriverWait(clock, driver,
                 TimeSpan.FromSeconds(180),
@@ -152,36 +148,54 @@ namespace FastDoIt3
             Console.WriteLine("Fill form...");
             //ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
             WebDriverWait wait = new WebDriverWait(clock, driver,
-                TimeSpan.FromSeconds(10),
-                TimeSpan.FromMilliseconds(10)
+                TimeSpan.FromSeconds(5),
+                TimeSpan.FromMilliseconds(100)
                 );
+            var durl = driver.Url;
             try
             {
-                var element0 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingFirstName")));
+                IWebElement element0 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingFirstName")));
                 element0.SendKeys(profileInfoList[1]);
             }
-            catch (Exception ex)
+            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
+
+            try
             {
-                Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
-            }
-
-            IWebElement element1 = driver.FindElement(By.Name("CheckoutData.BillingLastName"));
+                IWebElement element1 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingLastName")));
                 element1.SendKeys(profileInfoList[2]);
+            }
+            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
 
-            IWebElement element2 = driver.FindElement(By.Name("CheckoutData.Email"));
-                element2.SendKeys(profileInfoList[2]);
+            try
+            {
+                IWebElement element2 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.Email")));
+                element2.SendKeys(profileInfoList[3]);
+            }
+            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
 
-            IWebElement element3 = driver.FindElement(By.Name("CheckoutData.BillingAddress1"));
-                element3.SendKeys(profileInfoList[2]);
+            try
+            {
+                IWebElement element3 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingAddress1")));
+                element3.SendKeys(profileInfoList[4]);
+            }
+            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
 
-            IWebElement element4 = driver.FindElement(By.Name("CheckoutData.BillingCity"));
-                element4.SendKeys(profileInfoList[2]);
+//                  / html / body / div[2] / div[2] / form[1] / div[1] / div[1] / div / div[2] / div[2] / div / input first name
+//                  / html / body / div[2] / div[2] / form[1] / div[1] / div[1] / div / div[2] / div[3] / div / input last name
+//                  / html / body / div[2] / div[2] / form[1] / div[1] / div[1] / div / div[2] / div[4] / div / input email
+//                  / html / body / div[2] / div[2] / form[1] / div[1] / div[1] / div / div[2] / div[6] / div / input address1
+//                  / html / body / div[2] / div[2] / form[1] / div[1] / div[1] / div / div[2] / div[8] / div / input sity
+//                  / html / body / div[2] / div[2] / form[1] / div[1] / div[1] / div / div[2] / div[10] / div / input zip code
+//                  / html / body / div[2] / div[2] / form[1] / div[1] / div[1] / div / div[2] / div[12] / div / input mobile phone
 
-            IWebElement element5 = driver.FindElement(By.Name("CheckoutData.BillingZIP"));
-                element5.SendKeys(profileInfoList[2]);
+            //IWebElement element4 = driver.FindElement(By.Name("CheckoutData.BillingCity"));
+            //    element4.SendKeys(profileInfoList[2]);
 
-            IWebElement element6 = driver.FindElement(By.Name("CheckoutData.BillingPhone"));
-                element6.SendKeys(profileInfoList[2]);
+            //IWebElement element5 = driver.FindElement(By.Name("CheckoutData.BillingZIP"));
+            //    element5.SendKeys(profileInfoList[2]);
+
+            //IWebElement element6 = driver.FindElement(By.Name("CheckoutData.BillingPhone"));
+            //    element6.SendKeys(profileInfoList[2]);
         }
 
         private static List<string> GetLinks()
