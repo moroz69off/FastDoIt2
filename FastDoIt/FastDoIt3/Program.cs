@@ -1,20 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
 
 namespace FastDoIt3
 {
     class Program
     {
+        private static readonly string checkoutPath = "https://kith.com/pages/international-checkout#Global-e_International_Checkout";
+        private static readonly IClock clock = new SystemClock();
+
         public static string sessionId { get; private set; }
         public static int processId { get; private set; }
+
+        static List<string> profileInfoList;
 
         [Obsolete]
         static void Main(string[] args)
@@ -28,23 +31,43 @@ namespace FastDoIt3
 
             ChromeOptions options = InitOptions();
 
-            object preference = null;
-            options.AddLocalStatePreference("", preference);
-
             IWebDriver driver = new ChromeDriver(chromeDriverService, options);
+            
             _ = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 
             driver.Manage().Window.Maximize();
 
             driver.Navigate().GoToUrl(links[0]);
 
-            // проверить, что сервер отдал страницу
-            if (true)
+            #region // check that the server has given the good page
+            bool isAgoodResponse = IsGoodResponse(links[0]);
+
+            bool IsGoodResponse(string link)
+            {
+                return true;
+            }
+
+            WebDriverWait wait = new WebDriverWait(clock, driver,
+                TimeSpan.FromSeconds(180),
+                TimeSpan.FromMilliseconds(777)
+                );
+
+            try
+            {
+                isAgoodResponse = wait.Until(d => GetStatusCode(driver));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
+            }
+            #endregion // check that the server has given the good page
+
+            if (isAgoodResponse)
             {
                 try
                 {
-                    IWebElement webElement = driver.FindElement(By.ClassName("goAccept"));
-                    webElement.Click();
+                    driver.FindElement(By.ClassName("goAccept")).Click();
+                    System.Threading.Thread.Sleep(777);
                 }
                 catch (Exception ex)
                 {
@@ -55,8 +78,8 @@ namespace FastDoIt3
                 //backToShop
                 try
                 {
-                    IWebElement webElement = driver.FindElement(By.ClassName("backToShop"));
-                    webElement.Click();
+                    driver.FindElement(By.ClassName("backToShop")).Click();
+                    System.Threading.Thread.Sleep(777);
                 }
                 catch (Exception ex)
                 {
@@ -73,9 +96,6 @@ namespace FastDoIt3
                             webElements[i].Click();
                         }
                     }
-                    //var spanClickable = webElement.FindElement(By.TagName("span"));
-                    //spanClickable.Click();
-                  //webElement.Submit();
                 }
                 catch (Exception ex)
                 {
@@ -84,9 +104,8 @@ namespace FastDoIt3
 
                 try
                 {
-                    var temp = driver.FindElement(By.ClassName("product-form__add-to-cart"));
                     driver.FindElement(By.ClassName("product-form__add-to-cart")).Click();
-                    System.Threading.Thread.Sleep(1000);
+                    System.Threading.Thread.Sleep(777);
                 }
                 catch (Exception ex)
                 {
@@ -104,12 +123,9 @@ namespace FastDoIt3
                             if (btns[i].Text == "CHECKOUT")
                             {
                                 btns[i].Click();
-                                if (driver.Url == "https://kith.com/pages/international-checkout#Global-e_International_Checkout")
-                                {
-                                    DoPay();
-                                    driver.Quit();
-                                    return;
-                                }
+                                System.Threading.Thread.Sleep(4444);
+                                DoPay(driver);
+                                return;
                             }
                         }
                     }
@@ -117,18 +133,55 @@ namespace FastDoIt3
                     {
                         Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
                     }
-                } while (driver.Url != "https://kith.com/pages/international-checkout#Global-e_International_Checkout");
+                } while (driver.Url != checkoutPath);
                 #endregion automation
             }
-
 
             driver.Quit();
             Console.ReadLine();
         }
 
-        private static void DoPay()
+        private static bool GetStatusCode(IWebDriver driver)
         {
-            Console.WriteLine("DoPay OK"); // to do
+            if (!(driver.Title == "404 Not Found – Kith")) return true;
+            else return false;
+        }
+
+        private static void DoPay(IWebDriver driver)
+        {
+            Console.WriteLine("Fill form...");
+            //ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
+            WebDriverWait wait = new WebDriverWait(clock, driver,
+                TimeSpan.FromSeconds(10),
+                TimeSpan.FromMilliseconds(10)
+                );
+            try
+            {
+                var element0 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingFirstName")));
+                element0.SendKeys(profileInfoList[1]);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
+            }
+
+            IWebElement element1 = driver.FindElement(By.Name("CheckoutData.BillingLastName"));
+                element1.SendKeys(profileInfoList[2]);
+
+            IWebElement element2 = driver.FindElement(By.Name("CheckoutData.Email"));
+                element2.SendKeys(profileInfoList[2]);
+
+            IWebElement element3 = driver.FindElement(By.Name("CheckoutData.BillingAddress1"));
+                element3.SendKeys(profileInfoList[2]);
+
+            IWebElement element4 = driver.FindElement(By.Name("CheckoutData.BillingCity"));
+                element4.SendKeys(profileInfoList[2]);
+
+            IWebElement element5 = driver.FindElement(By.Name("CheckoutData.BillingZIP"));
+                element5.SendKeys(profileInfoList[2]);
+
+            IWebElement element6 = driver.FindElement(By.Name("CheckoutData.BillingPhone"));
+                element6.SendKeys(profileInfoList[2]);
         }
 
         private static List<string> GetLinks()
@@ -141,7 +194,9 @@ namespace FastDoIt3
             ChromeOptions options = new ChromeOptions();
             options.SetLoggingPreference("Browser", LogLevel.All); // temp
             options.SetLoggingPreference("Driver", LogLevel.All);  // temp
-          //options.AddArguments("--disable-infobars"); // temp
+            //options.AddArguments("--disable-infobars"); // temp
+            //object preference = null;
+            //options.AddLocalStatePreference("", preference);
             return options;
         }
 

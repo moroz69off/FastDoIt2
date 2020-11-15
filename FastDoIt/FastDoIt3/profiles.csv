@@ -1,2 +1,2 @@
-размер, Имя, Фамилия, Электронная почта, Строка адреса, Город, Почтовый индекс, Мобильный телефон, Номер карты, Срок действия(00/0000), Код безопасности
-41, Ivan, Ivanov, ivanivanov@mail.to, Shabolovka 27, Moskva, 115162, +7(495)1234567, 1234432100009999, 12/2021, 123
+size, Name, LastName, e-mail, address, sity, postindex, phone, cardNum, maintenance(00/0000), Security code
+41, Ivan, Ivanov, ivanivanov@mail.to, Shabolovka 27, Moskva, 127000, +7(495)1234567, 1234432100009999, 12/2021, 123
