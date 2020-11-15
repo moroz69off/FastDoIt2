@@ -14,8 +14,8 @@ namespace FastDoIt3
         private static readonly string checkoutPath = "https://kith.com/pages/international-checkout#Global-e_International_Checkout";
         private static readonly IClock clock = new SystemClock();
 
-        public static string sessionId { get; private set; }
-        public static int processId { get; private set; }
+        public static string SessionId { get; private set; }
+        public static int ProcessId { get; private set; }
 
         static List<string> profileInfoList;
 
@@ -24,7 +24,7 @@ namespace FastDoIt3
         {
             Console.Title = "FastDoIt";
 
-            List<string> profileInfoList = GetProfile("profiles.csv", 1); // 1 - fisrt profile in profiles list (for multiprofiles work)
+            profileInfoList = GetProfile("profiles.csv", 1); // 1 - fisrt profile in profiles list (for multiprofiles work)
             List<string> links = GetLinks();
 
             ChromeDriverService chromeDriverService = AddService();
@@ -112,8 +112,8 @@ namespace FastDoIt3
                 {
                     try
                     {
-                        var cartContainer = driver.FindElement(By.Id("CartContainer"));
-                        var btns = cartContainer.FindElements(By.TagName("button"));
+                        var cardContainer = driver.FindElement(By.Id("CartContainer"));
+                        var btns = cardContainer.FindElements(By.TagName("button"));
                         for (int i = 0; i < btns.Count; i++)
                         {
                             if (btns[i].Text == "CHECKOUT")
@@ -151,7 +151,11 @@ namespace FastDoIt3
                 TimeSpan.FromSeconds(5),
                 TimeSpan.FromMilliseconds(100)
                 );
-            var durl = driver.Url;
+            //go to the address form iframe
+            #region address form iframe
+            var durl = driver.Url;//temp
+            var iframeFormAddressDriver = wait.Until(d => driver.SwitchTo().Frame("Intrnl_CO_Container"));
+
             try
             {
                 IWebElement element0 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingFirstName")));
@@ -180,22 +184,84 @@ namespace FastDoIt3
             }
             catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
 
-//                  / html / body / div[2] / div[2] / form[1] / div[1] / div[1] / div / div[2] / div[2] / div / input first name
-//                  / html / body / div[2] / div[2] / form[1] / div[1] / div[1] / div / div[2] / div[3] / div / input last name
-//                  / html / body / div[2] / div[2] / form[1] / div[1] / div[1] / div / div[2] / div[4] / div / input email
-//                  / html / body / div[2] / div[2] / form[1] / div[1] / div[1] / div / div[2] / div[6] / div / input address1
-//                  / html / body / div[2] / div[2] / form[1] / div[1] / div[1] / div / div[2] / div[8] / div / input sity
-//                  / html / body / div[2] / div[2] / form[1] / div[1] / div[1] / div / div[2] / div[10] / div / input zip code
-//                  / html / body / div[2] / div[2] / form[1] / div[1] / div[1] / div / div[2] / div[12] / div / input mobile phone
+            try
+            {
+                IWebElement element4 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingCity")));
+                element4.SendKeys(profileInfoList[5]);
+            }
+            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
 
-            //IWebElement element4 = driver.FindElement(By.Name("CheckoutData.BillingCity"));
-            //    element4.SendKeys(profileInfoList[2]);
+            try
+            {
+                IWebElement element5 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingZIP")));
+                element5.SendKeys(profileInfoList[6]);
+            }
+            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
 
-            //IWebElement element5 = driver.FindElement(By.Name("CheckoutData.BillingZIP"));
-            //    element5.SendKeys(profileInfoList[2]);
+            try
+            {
+                IWebElement element6 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingPhone")));
+                element6.SendKeys(profileInfoList[7]);
+            }
+            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
+            #endregion
 
-            //IWebElement element6 = driver.FindElement(By.Name("CheckoutData.BillingPhone"));
-            //    element6.SendKeys(profileInfoList[2]);
+            //go to the card form iframe
+            #region card form iframe
+            var cardFormIframe = wait.Until(d => driver.SwitchTo().Frame(driver.FindElement(By.Id("secureWindow"))));
+
+            try
+            {
+                IWebElement element = wait.Until(d => driver.FindElement(By.Name("PaymentData.cardNum")));
+                element.SendKeys(profileInfoList[8].Replace(" ", ""));
+            }
+            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
+
+            try
+            {
+                string month = profileInfoList[9].Remove(2);
+                var buttonka = wait.Until(d => driver.FindElement(By.XPath($"/html/body/form/div/div/div[2]/div/div/div[1]/div/select/option[{GetMonth(month)}]")));
+                buttonka.Click();
+            }
+            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
+
+            try
+            {
+                string year = profileInfoList[9].Remove(0, 3);
+                driver.FindElement(
+                    By.XPath(
+                        $"/html/body/form/div/div/div[2]/div/div/div[2]/div/select/option[{GetYear(year)}]")).Click();
+            }
+            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
+
+            try
+            {
+                IWebElement element = driver.FindElement(By.Name("PaymentData.cvdNumber"));
+                element.SendKeys(profileInfoList[10]);
+            }
+            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
+
+            try
+            {
+                var buttonka = driver.FindElement(By.XPath("/html/body/div[2]/div[2]/div[4]/div/div[2]/div/button"));
+                buttonka.Click();
+                Console.WriteLine("button Id(\"btnPay\") cliked");
+            }
+            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
+            #endregion
+        }
+
+        private static string GetMonth(string month)
+        {
+            int i = int.Parse(month);
+            return (++i).ToString("00");
+        }
+
+        private static string GetYear(string year)
+        {
+            int i = int.Parse(year);
+            int indexOption = i - 2018;
+            return (indexOption).ToString();
         }
 
         private static List<string> GetLinks()
