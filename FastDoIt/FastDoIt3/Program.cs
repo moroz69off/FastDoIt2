@@ -18,7 +18,7 @@ namespace FastDoIt3
         public static int ProcessId { get; private set; }
 
         static List<string> profileInfoList;
-        static int timeout = 180, interval = 777;
+        static int timeout = 1800, interval = 777;
 
         [Obsolete]
         static void Main(string[] args)
@@ -27,18 +27,6 @@ namespace FastDoIt3
             {
                 timeout = int.Parse(args[0]);
                 interval = int.Parse(args[1]);
-                //switch (args[1])
-                //{
-                //    case "-TOUT":
-                //        // ...
-                //        break;
-                //    case "-SPAN":
-                //        // ...
-                //        break;
-                //    default:
-                //        // ...
-                //        break;
-                //}
             }
             Console.Title = "FastDoIt";
 
@@ -225,7 +213,7 @@ namespace FastDoIt3
             catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
             #endregion
 
-            //go to the card form iframe
+            //go to the card form iframe and push pay button
             #region card form iframe
             var cardFormIframe = wait.Until(d => driver.SwitchTo().Frame(driver.FindElement(By.Id("secureWindow"))));
 
@@ -268,10 +256,7 @@ namespace FastDoIt3
                 {
                     if (btns[i].Text == "PAY AND PLACE ORDER")
                     {
-                        Console.WriteLine("Button kak-by clicked");
-                        Console.WriteLine(timeout);
-                        Console.WriteLine(interval);
-                        //btns[i].Click();
+                        btns[i].Click();
                         return;
                     }
                 }
