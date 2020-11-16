@@ -140,6 +140,11 @@ namespace FastDoIt3
             Console.ReadLine();
         }
 
+        /// <summary>
+        /// Checks that the response code is not 404
+        /// </summary>
+        /// <param name="driver">IWebDriver driver</param>
+        /// <returns>bool is not 404 status code</returns>
         private static bool GetStatusCode(IWebDriver driver)
         {
             if (!(driver.Title == "404 Not Found – Kith")) return true;
