@@ -18,10 +18,28 @@ namespace FastDoIt3
         public static int ProcessId { get; private set; }
 
         static List<string> profileInfoList;
+        static int timeout = 180, interval = 777;
 
         [Obsolete]
         static void Main(string[] args)
         {
+            if (args.Length > 1)
+            {
+                timeout = int.Parse(args[0]);
+                interval = int.Parse(args[1]);
+                //switch (args[1])
+                //{
+                //    case "-TOUT":
+                //        // ...
+                //        break;
+                //    case "-SPAN":
+                //        // ...
+                //        break;
+                //    default:
+                //        // ...
+                //        break;
+                //}
+            }
             Console.Title = "FastDoIt";
 
             profileInfoList = GetProfile("profiles.csv", 1); // 1 - fisrt profile in profiles list (for multiprofiles work)
@@ -44,8 +62,8 @@ namespace FastDoIt3
             bool IsGoodResponse(string link) { return true; }
 
             WebDriverWait wait = new WebDriverWait(clock, driver,
-                TimeSpan.FromSeconds(180),
-                TimeSpan.FromMilliseconds(777)
+                TimeSpan.FromSeconds(timeout),
+                TimeSpan.FromMilliseconds(interval)
                 );
 
             try
@@ -140,6 +158,10 @@ namespace FastDoIt3
             else return false;
         }
 
+        /// <summary>
+        /// fills in the fields of the payment form for the card and delivery address
+        /// </summary>
+        /// <param name="driver">IWebDriver driver</param>
         private static void DoPay(IWebDriver driver)
         {
             Console.WriteLine("Fill form...");
@@ -207,12 +229,12 @@ namespace FastDoIt3
             #region card form iframe
             var cardFormIframe = wait.Until(d => driver.SwitchTo().Frame(driver.FindElement(By.Id("secureWindow"))));
 
-            try
+            try //PaymentData.cardNum
             {
                 IWebElement element = wait.Until(d => driver.FindElement(By.Name("PaymentData.cardNum")));
                 element.SendKeys(profileInfoList[8].Replace(" ", ""));
             }
-            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
+            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); } // PaymentData.cardNum
 
             try
             {
@@ -220,25 +242,25 @@ namespace FastDoIt3
                 var buttonka = wait.Until(d => driver.FindElement(By.XPath($"/html/body/form/div/div/div[2]/div/div/div[1]/div/select/option[{GetMonth(month)}]")));
                 buttonka.Click();
             }
-            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
+            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); } // month
 
-            try
+            try // year
             {
                 string year = profileInfoList[9].Remove(0, 3);
                 driver.FindElement(
                     By.XPath(
                         $"/html/body/form/div/div/div[2]/div/div/div[2]/div/select/option[{GetYear(year)}]")).Click();
             }
-            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
+            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); } // year
 
-            try
+            try // PaymentData.cvdNumber
             {
                 IWebElement element = driver.FindElement(By.Name("PaymentData.cvdNumber"));
                 element.SendKeys(profileInfoList[10]);
             }
-            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
+            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); } // PaymentData.cvdNumber
 
-            try
+            try // PAY AND PLACE ORDER
             {
                 driver.SwitchTo().ParentFrame();
                 var btns = driver.FindElements(By.TagName("button"));
@@ -246,13 +268,16 @@ namespace FastDoIt3
                 {
                     if (btns[i].Text == "PAY AND PLACE ORDER")
                     {
-                        btns[i].Click();
+                        Console.WriteLine("Button kak-by clicked");
+                        Console.WriteLine(timeout);
+                        Console.WriteLine(interval);
+                        //btns[i].Click();
                         return;
                     }
                 }
                 Console.WriteLine("button Id(\"btnPay\") cliked");
             }
-            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
+            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); } // PAY AND PLACE ORDER
             #endregion
         }
 
