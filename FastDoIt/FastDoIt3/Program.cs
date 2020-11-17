@@ -23,7 +23,7 @@ namespace FastDoIt3
         [Obsolete]
         static void Main(string[] args)
         {
-            if (args.Length > 1)
+            if (args.Length == 2)
             {
                 timeout = int.Parse(args[0]);
                 interval = int.Parse(args[1]);
