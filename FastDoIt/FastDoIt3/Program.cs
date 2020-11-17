@@ -88,7 +88,7 @@ namespace FastDoIt3
                     Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
                 } // backToShop btn
 
-                try
+                try  // size select
                 {
                     ReadOnlyCollection<IWebElement> webElements = driver.FindElements(By.ClassName("swatch-element"));
                     for (int i = 0; i < webElements.Count; i++)
@@ -101,15 +101,12 @@ namespace FastDoIt3
                 }
                 catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); } // size select
 
-                try
+                try //add-to-cart btn
                 {
                     driver.FindElement(By.ClassName("product-form__add-to-cart")).Click();
                     System.Threading.Thread.Sleep(777);
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
-                }//add-to-cart btn
+                catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }//add-to-cart btn
 
                 do
                 {
@@ -122,7 +119,7 @@ namespace FastDoIt3
                             if (btns[i].Text == "CHECKOUT")
                             {
                                 btns[i].Click();
-                                System.Threading.Thread.Sleep(3333);
+                                System.Threading.Thread.Sleep(2222);
                                 DoPay(driver);
                                 return;
                             }
