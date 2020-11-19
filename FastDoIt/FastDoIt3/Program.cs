@@ -7,15 +7,18 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
+using RES = FastDoIt3.Properties.Resources;
+
 namespace FastDoIt3
 {
     class Program
     {
-        private static readonly string checkoutPath = "https://kith.com/pages/international-checkout#Global-e_International_Checkout";
+        private static readonly string checkoutPath = RES.checkoutPath;
         private static readonly IClock clock = new SystemClock();
 
         public static string SessionId { get; private set; }
         public static int ProcessId { get; private set; }
+        public static bool isDebug { get; private set; }
 
         static List<string> profileInfoList;
         static int timeout = 1800, interval = 777;
@@ -229,7 +232,7 @@ namespace FastDoIt3
             try
             {
                 string month = profileInfoList[9].Remove(2);
-                var buttonka = wait.Until(d => driver.FindElement(By.XPath($"/html/body/form/div/div/div[2]/div/div/div[1]/div/select/option[{GetMonth(month)}]")));
+                var buttonka = wait.Until(d => driver.FindElement(By.XPath(RES.monthSelectXpath)));
                 buttonka.Click();
             }
             catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); } // month
@@ -258,7 +261,15 @@ namespace FastDoIt3
                 {
                     if (btns[i].Text == "PAY AND PLACE ORDER")
                     {
-                        btns[i].Click();
+                        if (isDebug)
+                        {
+                            Console.WriteLine("PAY AND PLACE ORDER button kak-by clicked");
+                        }
+                        else 
+                        {
+                            btns[i].Click();
+                        }
+
                         return;
                     }
                 }

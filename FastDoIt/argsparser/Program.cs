@@ -31,16 +31,16 @@ namespace argsparser
                             break;
                         case "-t":
                             Console.WriteLine("Case Timeout");
-                            timeOut = int.Parse(margs[++i]);
+                            timeOut = int.Parse(margs[++ i]);
                             break;
                         case "-p":
                             Console.WriteLine("Case Profile");
                             // profile info write with starts and ands " char`s, whitespace char - is a separator of profile info items
-                            ProfileInfo = new List<string>(margs[++i].Trim(new char[] { '"' }).Split(new char[] { ' ' }));
+                            ProfileInfo = new List<string>(margs[++ i].Trim(new char[] { '"' }).Split(new char[] { ' ' }));
                             break;
                         case "-i":
                             Console.WriteLine("Case Interval");
-                            interVal= int.Parse(margs[++i]);
+                            interVal = int.Parse(margs[++ i]);
                             break;
                         default: Console.WriteLine("Case Default"); break;
                     }
