@@ -70,7 +70,7 @@ namespace FastDoIt3
 
             IWebDriver driver = new ChromeDriver(chromeDriverService, options);
             
-            _ = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            var wait10s = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 
             driver.Manage().Window.Maximize();
 
