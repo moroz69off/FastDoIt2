@@ -18,22 +18,50 @@ namespace FastDoIt3
 
         public static string SessionId { get; private set; }
         public static int ProcessId { get; private set; }
-        public static bool isDebug { get; private set; }
+        public static bool isDebug { get; private set; } = false;
+        public static string switchOn { get; private set; } = "";
 
-        static List<string> profileInfoList;
+        public static List<string> ProfileInfoList { get; private set; }
+
         static int timeout = 1800, interval = 777;
 
         [Obsolete]
         static void Main(string[] args)
         {
-            if (args.Length == 2)
+            if (args.Length > 0)
             {
-                timeout = int.Parse(args[0]);
-                interval = int.Parse(args[1]);
+                for (int i = 0; i < args.Length; i++)
+                {
+                    switchOn = args[i];
+                    switch (switchOn)
+                    {
+                        case "-D":
+                            Console.WriteLine("Debug mode enabled.");
+                            isDebug = true;
+                            break;
+                        case "-T":
+                            Console.WriteLine($"Timeout = {int.Parse(args[i + 1])}");
+                            timeout = int.Parse(args[++i]);
+                            break;
+                        case "-I":
+                            Console.WriteLine($"Interval = {int.Parse(args[i + 1])}");
+                            interval = int.Parse(args[i+1]);
+                            break;
+                        case "-P":
+                            Console.WriteLine($"Profile info: \"{args[i + 1]}\"");
+                            ProfileInfoList = new List<string>(args[i + 1].Trim(new char['"']).Split(new char[',']));
+                            break;
+                        default:
+                            Console.WriteLine($"Parameter №{i} is not recognized");
+                            break;
+                    }
+                }
             }
             Console.Title = "FastDoIt";
 
-            profileInfoList = GetProfile("profiles.csv", 1); // 1 - fisrt profile in profiles list (for multiprofiles work)
+            if (!args.Contains("-D"))
+                ProfileInfoList = GetProfile("profiles.csv", 1); // 1 - fisrt profile in profiles list (for multiprofiles work)
+            
             List<string> links = GetLinks();
 
             ChromeDriverService chromeDriverService = AddService();
@@ -96,7 +124,7 @@ namespace FastDoIt3
                     ReadOnlyCollection<IWebElement> webElements = driver.FindElements(By.ClassName("swatch-element"));
                     for (int i = 0; i < webElements.Count; i++)
                     {
-                        if (webElements[i].Text==profileInfoList[0])
+                        if (webElements[i].Text==ProfileInfoList[0])
                         {
                             webElements[i].Click();
                         }
@@ -171,49 +199,49 @@ namespace FastDoIt3
             try
             {
                 IWebElement element0 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingFirstName")));
-                element0.SendKeys(profileInfoList[1]);
+                element0.SendKeys(ProfileInfoList[1]);
             }
             catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
 
             try
             {
                 IWebElement element1 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingLastName")));
-                element1.SendKeys(profileInfoList[2]);
+                element1.SendKeys(ProfileInfoList[2]);
             }
             catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
 
             try
             {
                 IWebElement element2 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.Email")));
-                element2.SendKeys(profileInfoList[3]);
+                element2.SendKeys(ProfileInfoList[3]);
             }
             catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
 
             try
             {
                 IWebElement element3 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingAddress1")));
-                element3.SendKeys(profileInfoList[4]);
+                element3.SendKeys(ProfileInfoList[4]);
             }
             catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
 
             try
             {
                 IWebElement element4 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingCity")));
-                element4.SendKeys(profileInfoList[5]);
+                element4.SendKeys(ProfileInfoList[5]);
             }
             catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
 
             try
             {
                 IWebElement element5 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingZIP")));
-                element5.SendKeys(profileInfoList[6]);
+                element5.SendKeys(ProfileInfoList[6]);
             }
             catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
 
             try
             {
                 IWebElement element6 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingPhone")));
-                element6.SendKeys(profileInfoList[7]);
+                element6.SendKeys(ProfileInfoList[7]);
             }
             catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
             #endregion
@@ -225,13 +253,13 @@ namespace FastDoIt3
             try //PaymentData.cardNum
             {
                 IWebElement element = wait.Until(d => driver.FindElement(By.Name("PaymentData.cardNum")));
-                element.SendKeys(profileInfoList[8].Replace(" ", ""));
+                element.SendKeys(ProfileInfoList[8].Replace(" ", ""));
             }
             catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); } // PaymentData.cardNum
 
             try
             {
-                string month = profileInfoList[9].Remove(2);
+                string month = ProfileInfoList[9].Remove(2);
                 var buttonka = wait.Until(d => driver.FindElement(By.XPath(RES.monthSelectXpath)));
                 buttonka.Click();
             }
@@ -239,7 +267,7 @@ namespace FastDoIt3
 
             try // year
             {
-                string year = profileInfoList[9].Remove(0, 3);
+                string year = ProfileInfoList[9].Remove(0, 3);
                 driver.FindElement(
                     By.XPath(
                         $"/html/body/form/div/div/div[2]/div/div/div[2]/div/select/option[{GetYear(year)}]")).Click();
@@ -249,7 +277,7 @@ namespace FastDoIt3
             try // PaymentData.cvdNumber
             {
                 IWebElement element = driver.FindElement(By.Name("PaymentData.cvdNumber"));
-                element.SendKeys(profileInfoList[10]);
+                element.SendKeys(ProfileInfoList[10]);
             }
             catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); } // PaymentData.cvdNumber
 
