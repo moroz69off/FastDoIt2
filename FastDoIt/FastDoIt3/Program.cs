@@ -23,7 +23,7 @@ namespace FastDoIt3
 
         public static List<string> ProfileInfoList { get; private set; }
 
-        static int timeout = 1800, interval = 777;
+        static int timeout = 3500, interval = 777;
 
         [Obsolete]
         static void Main(string[] args)
@@ -268,9 +268,7 @@ namespace FastDoIt3
             try // year
             {
                 string year = ProfileInfoList[9].Remove(0, 3);
-                driver.FindElement(
-                    By.XPath(
-                        $"/html/body/form/div/div/div[2]/div/div/div[2]/div/select/option[{GetYear(year)}]")).Click();
+                driver.FindElement(By.XPath(RES.yearSelectXpath)).Click();
             }
             catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); } // year
 
@@ -291,7 +289,7 @@ namespace FastDoIt3
                     {
                         if (isDebug)
                         {
-                            Console.WriteLine("PAY AND PLACE ORDER button kak-by clicked");
+                            Console.WriteLine("`PAY AND PLACE ORDER` button `kak-by` clicked");
                         }
                         else 
                         {
@@ -301,7 +299,7 @@ namespace FastDoIt3
                         return;
                     }
                 }
-                Console.WriteLine("button Id(\"btnPay\") cliked");
+                Console.WriteLine("button Id \"btnPay\" cliked");
             }
             catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); } // PAY AND PLACE ORDER
             #endregion

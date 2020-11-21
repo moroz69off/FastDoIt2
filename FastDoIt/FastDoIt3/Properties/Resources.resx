@@ -123,4 +123,7 @@
   <data name="monthSelectXpath" xml:space="preserve">
     <value>/html/body/form/div/div/div[2]/div/div/div[1]/div/select/option[{GetMonth(month)}]</value>
   </data>
+  <data name="yearSelectXpath" xml:space="preserve">
+    <value>/html/body/form/div/div/div[2]/div/div/div[2]/div/select/option[{GetYear(year)}]</value>
+  </data>
 </root>

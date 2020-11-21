@@ -77,5 +77,14 @@ namespace FastDoIt3.Properties {
                 return ResourceManager.GetString("monthSelectXpath", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на /html/body/form/div/div/div[2]/div/div/div[2]/div/select/option[{GetYear(year)}].
+        /// </summary>
+        internal static string yearSelectXpath {
+            get {
+                return ResourceManager.GetString("yearSelectXpath", resourceCulture);
+            }
+        }
     }
 }
