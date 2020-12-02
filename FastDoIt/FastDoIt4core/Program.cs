@@ -50,7 +50,6 @@ namespace FastDoIt4core
             } // get args values
 
 
-            Console.ReadLine();
         }
     }
 }
