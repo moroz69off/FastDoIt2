@@ -54,7 +54,7 @@ namespace FastDoIt4core
                             Console.WriteLine($"Profile info: \"{args[i + 1]}\"");
                             string[] profiles = System.IO.File.ReadAllLines("profiles.csv");
                             profileNum = int.Parse(args[i + 1]);
-                            ProfileInfoList = new List<string>(profiles[profileNum + 1].Trim(new char['"']).Split(new char[',']));
+                            ProfileInfoList = GetProfile("profiles.csv", profileNum);
                             break;
                         default:
                             Console.WriteLine($"Parameter №{i} is not recognized");
@@ -64,37 +64,15 @@ namespace FastDoIt4core
             } // get args values
 
             if (!isDebug)
-                ProfileInfoList = GetProfile("profiles.csv", profileNum); // 1 - fisrt profile in profiles list (for multiprofiles work)
+                ProfileInfoList = GetProfile("profiles.csv", 1); // 1 - fisrt profile in profiles list (for multiprofiles work)
 
             webDriver = new ChromeDriver();
-
-            _ = FastDoItTask();
         }
 
         private static List<string> GetProfile(string path, int num)
         {
-            throw new NotImplementedException();
-        }
-
-        private static async System.Threading.Tasks.Task FastDoItTask()
-        {
-            object ob = null;
-            AsyncCallback call = null;
-            FasFunc.BeginInvoke(call, ob);
-            str = await WriteLog("fast.log", "driver stared " +
-                DateTime.Now.ToString() +
-                " | driver clock " +
-                clock.Now +
-                " | process " +
-                webDriver.WindowHandles + webDriver.Manage().Logs
-                );
-        }
-
-        private static Task<string> WriteLog(string path, string message)
-        {
-            Console.WriteLine(message);
-            System.IO.File.AppendAllTextAsync(path, message);
-            return new Task<string>(FasFunc);
+            string str = System.IO.File.ReadAllLines(path)[num];
+            return new List<string>(str.Trim(new char['"']).Split(new char[',']));
         }
     }
 }

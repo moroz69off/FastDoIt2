@@ -2,7 +2,7 @@
   "profiles": {
     "FastDoIt4core": {
       "commandName": "Project",
-      "commandLineArgs": "-D -P 2 -I 777"
+      "commandLineArgs": "-D -P 1 -I 777"
     }
   }
 }
