@@ -63,9 +63,6 @@ namespace FastDoIt4core
                 }
             } // get args values
 
-            if (!isDebug)
-                ProfileInfoList = GetProfile("profiles.csv", 1); // 1 - fisrt profile in profiles list (for multiprofiles work)
-
             webDriver = new ChromeDriver();
         }
 
