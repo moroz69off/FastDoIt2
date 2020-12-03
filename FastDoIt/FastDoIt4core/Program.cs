@@ -40,6 +40,7 @@ namespace FastDoIt4core
                     {
                         case "-D":
                             Console.WriteLine("Debug mode enabled.");
+                            ProfileInfoList = GetProfile("profiles.csv", 1);
                             isDebug = true;
                             break;
                         case "-T":
@@ -62,6 +63,12 @@ namespace FastDoIt4core
                     }
                 }
             } // get args values
+
+            if (!isDebug)
+            {
+                ProfileInfoList = GetProfile("profiles.csv", 2);
+            }
+
             List<string> links = GetLinks();
 
             ChromeDriverService chromeDriverService = AddService();
@@ -124,13 +131,13 @@ namespace FastDoIt4core
                     ReadOnlyCollection<IWebElement> webElements = driver.FindElements(By.ClassName("swatch-element"));
                     for (int i = 0; i < webElements.Count; i++)
                     {
-                        if (webElements[i].Text == ProfileInfoList[0])
+                        if (webElements[i].Text == ProfileInfoList[0])/////////////////////
                         {
                             webElements[i].Click();
                         }
                     }
                 }
-                catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); } // size select
+                catch (Exception ex) {  } // size select
 
                 try //add-to-cart btn
                 {
@@ -202,49 +209,49 @@ namespace FastDoIt4core
                 IWebElement element0 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingFirstName")));
                 element0.SendKeys(ProfileInfoList[1]);
             }
-            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
+            catch (Exception ex) { AddErrorLog(ex); }
 
             try
             {
                 IWebElement element1 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingLastName")));
                 element1.SendKeys(ProfileInfoList[2]);
             }
-            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
+            catch (Exception ex) { AddErrorLog(ex); }
 
             try
             {
                 IWebElement element2 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.Email")));
                 element2.SendKeys(ProfileInfoList[3]);
             }
-            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
+            catch (Exception ex) { AddErrorLog(ex); }
 
             try
             {
                 IWebElement element3 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingAddress1")));
                 element3.SendKeys(ProfileInfoList[4]);
             }
-            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
+            catch (Exception ex) { AddErrorLog(ex); }
 
             try
             {
                 IWebElement element4 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingCity")));
                 element4.SendKeys(ProfileInfoList[5]);
             }
-            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
+            catch (Exception ex) { AddErrorLog(ex); }
 
             try
             {
                 IWebElement element5 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingZIP")));
                 element5.SendKeys(ProfileInfoList[6]);
             }
-            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
+            catch (Exception ex) { AddErrorLog(ex); }
 
             try
             {
                 IWebElement element6 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingPhone")));
                 element6.SendKeys(ProfileInfoList[7]);
             }
-            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }
+            catch (Exception ex) { AddErrorLog(ex); }
             #endregion
 
             //go to the card form iframe and push pay button
@@ -256,7 +263,7 @@ namespace FastDoIt4core
                 IWebElement element = wait.Until(d => driver.FindElement(By.Name("PaymentData.cardNum")));
                 element.SendKeys(ProfileInfoList[8].Replace(" ", ""));
             }
-            catch (Exception ex) { NewMethod(ex); } // PaymentData.cardNum
+            catch (Exception ex) { AddErrorLog(ex); } // PaymentData.cardNum
 
             try
             {
@@ -265,21 +272,21 @@ namespace FastDoIt4core
                 .FindElement(By.XPath($"/html/body/form/div/div/div[2]/div/div/div[1]/div/select/option[{GetMonth(month)}]")));
                 buttonka.Click();
             }
-            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); } // month
+            catch (Exception ex) { AddErrorLog(ex); } // month
 
             try // year
             {
                 string year = ProfileInfoList[9].Remove(0, 3);
                 driver.FindElement(By.XPath($"/html/body/form/div/div/div[2]/div/div/div[2]/div/select/option[{GetYear(year)}]")).Click();
             }
-            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); } // year
+            catch (Exception ex) { AddErrorLog(ex); } // year
 
             try // PaymentData.cvdNumber
             {
                 IWebElement element = driver.FindElement(By.Name("PaymentData.cvdNumber"));
                 element.SendKeys(ProfileInfoList[10]);
             }
-            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); } // PaymentData.cvdNumber
+            catch (Exception ex) { AddErrorLog(ex); } // PaymentData.cvdNumber
 
             try // PAY AND PLACE ORDER
             {
@@ -303,11 +310,11 @@ namespace FastDoIt4core
                 }
                 Console.WriteLine("button Id \"btnPay\" cliked");
             }
-            catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); } // PAY AND PLACE ORDER
+            catch (Exception ex) { AddErrorLog(ex); } // PAY AND PLACE ORDER
             #endregion
         }
 
-        private static void NewMethod(Exception ex)
+        private static void AddErrorLog(Exception ex)
         {
             Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
             System.IO.File.AppendAllText("fasterror.log", "Message: "+ex.Message + "\nStack trace: " + ex.StackTrace+"");
