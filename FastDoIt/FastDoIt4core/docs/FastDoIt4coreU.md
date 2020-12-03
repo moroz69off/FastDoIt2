@@ -19,3 +19,4 @@ a line with headers
 and a line with a profile for debugging.
 Write your profiles from 3 lines.
 ```
+~This small text (example)~
