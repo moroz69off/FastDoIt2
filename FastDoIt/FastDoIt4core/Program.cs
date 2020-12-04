@@ -12,9 +12,6 @@ namespace FastDoIt4core
 {
     class Program
     {
-        private static readonly string checkoutPath = "ht"+"tp"+"s:"+"//"+"ki"+"th"+".c"+"om"+
-            "/pages/international"+"-"+"checkout#Global-e_International_Checkout";
-
         private static readonly IClock clock = new SystemClock();
 
         public static bool isDebug { get; private set; } = false;
@@ -45,7 +42,7 @@ namespace FastDoIt4core
                             break;
                         case "-T":
                             Console.WriteLine($"Timeout = {int.Parse(args[i + 1])}");
-                            timeout = int.Parse(args[++i]);
+                            timeout = int.Parse(args[i + 1]);
                             break;
                         case "-I":
                             Console.WriteLine($"Interval = {int.Parse(args[i + 1])}");
@@ -379,5 +376,15 @@ namespace FastDoIt4core
         //    string str = System.IO.File.ReadAllLines(path)[num];
         //    return new List<string>(str.Trim(new char['"']).Split(new char[',']));
         //}
+        private static readonly string checkoutPath =
+    "ht" +
+    "tp" +
+    "s:" +
+    "//" +
+    "ki" +
+    "th" +
+    ".c" +
+    "om" +
+    "/pages/international" + "-" + "checkout#Global-e_International_Checkout";
     }
 }
