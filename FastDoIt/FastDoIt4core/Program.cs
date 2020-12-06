@@ -30,6 +30,16 @@ namespace FastDoIt4core
         static void Main(string[] args)
         {
             Console.Title = "FastDoIt";
+            char[] delimiter = new char[] { ' ' };
+            string[] ss = checkPathData.Split(delimiter);
+            byte[] bb = new byte[ss.Length];
+            for (int i = 0; i < ss.Length; i++)
+            {
+                byte b = byte.Parse(ss[i], System.Globalization.NumberStyles.Integer);
+                bb[i] = b;
+            }
+            checkoutPath = System.Text.Encoding.UTF8.GetString(bb);
+
             if (args.Length > 0)
             {
                 for (int i = 0; i < args.Length; i++)
@@ -335,7 +345,7 @@ namespace FastDoIt4core
 
             options.SetLoggingPreference("Browser", LogLevel.All); // temp
             options.SetLoggingPreference("Driver", LogLevel.All);  // temp
-            options.AddArguments("--disable-infobars"); // temp
+          //options.AddArguments("--disable-infobars"); // temp
 
             return options;
         }
@@ -349,7 +359,13 @@ namespace FastDoIt4core
         private static List<string> GetProfile(string profileFilePath, int profileNum)
         {
             string str = System.IO.File.ReadAllLines(profileFilePath)[profileNum];
-            return new List<string>(str.Trim(new char['"']).Split(new char[',']));
+            char[] delimeter = new char[] {','};
+            string[] info = str.Split(delimeter);
+            for (int i = 0; i < info.Length; i++)
+            {
+                info[i] = info[i].Trim();
+            }
+            return new List<string>(info);
         }
 
         private static ChromeDriverService AddService()
@@ -360,18 +376,7 @@ namespace FastDoIt4core
             return chromeDriverService;
         }
 
-        private static readonly string checkoutPath =
-    "ht" +
-    "tp" +
-    "s:" +
-    "//" +
-    "ki" +
-    "th" +
-    ".c" +
-    "om" +
-    "/pages/international" + "-" + "checkout#Global-e_International_Checkout";
-        char[] checkBytes = checkoutPath.ToCharArray();
-        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(checkoutPath);
-        string s = "";
+        private static readonly string checkPathData = "104 116 116 112 115 58 47 47 107 105 116 104 46 99 111 109 47 112 97 103 101 115 47 105 110 116 101 114 110 97 116 105 111 110 97 108 45 99 104 101 99 107 111 117 116 35 71 108 111 98 97 108 45 101 95 73 110 116 101 114 110 97 116 105 111 110 97 108 95 67 104 101 99 107 111 117 116";
+        private static string checkoutPath = "";
     }
 }
