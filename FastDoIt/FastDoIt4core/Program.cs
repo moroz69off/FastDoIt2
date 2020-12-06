@@ -1,10 +1,8 @@
-﻿using OpenQA.Selenium.Support.UI;
+﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -18,13 +16,16 @@ namespace FastDoIt4core
 
         public static List<string> ProfileInfoList { get; private set; }
 
+        private static List<string> links;
+
         public static Func<string> FasFunc { get; set; }
 
-        static IWebDriver webDriver;
+        static IWebDriver driver;
 
         static int timeout = 3500, interval = 777; // default
 
         private static int profileNum;
+
 
         static void Main(string[] args)
         {
@@ -50,7 +51,7 @@ namespace FastDoIt4core
                             break;
                         case "-P":
                             Console.WriteLine($"Profile info: \"{args[i + 1]}\"");
-                            string[] profiles = System.IO.File.ReadAllLines("profiles.csv");
+                            //string[] profiles = System.IO.File.ReadAllLines("profiles.csv");
                             profileNum = int.Parse(args[i + 1]);
                             ProfileInfoList = GetProfile("profiles.csv", profileNum);
                             break;
@@ -61,18 +62,15 @@ namespace FastDoIt4core
                 }
             } // get args values
 
-            if (!isDebug)
-            {
-                ProfileInfoList = GetProfile("profiles.csv", 2);
-            }
+            if (!isDebug && profileNum < 1) ProfileInfoList = GetProfile("profiles.csv", 2);
 
-            List<string> links = GetLinks();
+            links = GetLinks();
 
             ChromeDriverService chromeDriverService = AddService();
 
             ChromeOptions options = InitOptions();
 
-            IWebDriver driver = new ChromeDriver(chromeDriverService, options);
+            driver = new ChromeDriver(chromeDriverService, options);
 
             var wait10s = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 
@@ -91,12 +89,9 @@ namespace FastDoIt4core
 
             try
             {
-                isAgoodResponse = wait.Until(d => GetStatusCode(driver));
+                isAgoodResponse = wait.Until(d => IsGoodStatusCode(driver));
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
-            }
+            catch (Exception ex) { AddErrorLog(ex); }
             #endregion // check that the server has given the good page
 
             if (isAgoodResponse)
@@ -106,22 +101,17 @@ namespace FastDoIt4core
                     driver.FindElement(By.ClassName("goAccept")).Click();
                     System.Threading.Thread.Sleep(777);
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
-                }// accept cookie
+                catch (Exception ex) { AddErrorLog(ex); }// accept cookie
 
                 #region automation
+
                 //backToShop
                 try
                 {
                     driver.FindElement(By.ClassName("backToShop")).Click();
                     System.Threading.Thread.Sleep(777);
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
-                } // backToShop btn
+                catch (Exception ex) { AddErrorLog(ex); } // backToShop btn
 
                 try  // size select
                 {
@@ -134,14 +124,14 @@ namespace FastDoIt4core
                         }
                     }
                 }
-                catch (Exception ex) {  } // size select
+                catch (Exception ex) { AddErrorLog(ex); } // size select
 
                 try //add-to-cart btn
                 {
                     driver.FindElement(By.ClassName("product-form__add-to-cart")).Click();
                     System.Threading.Thread.Sleep(777);
                 }
-                catch (Exception ex) { Console.WriteLine(ex.Message + "\n" + ex.StackTrace); }//add-to-cart btn
+                catch (Exception ex) { AddErrorLog(ex); }//add-to-cart btn
 
                 do
                 {
@@ -160,10 +150,7 @@ namespace FastDoIt4core
                             }
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
-                    }
+                    catch (Exception ex) { AddErrorLog(ex); } // CHECKOUT
                 } while (driver.Url != checkoutPath);
                 #endregion automation
             }
@@ -178,7 +165,7 @@ namespace FastDoIt4core
         /// </summary>
         /// <param name="driver">IWebDriver driver</param>
         /// <returns>bool is not 404 status code</returns>
-        private static bool GetStatusCode(IWebDriver driver)
+        private static bool IsGoodStatusCode(IWebDriver driver)
         {
             if (!(driver.Title == "404 Not Found – Kith")) return true;
             else return false;
@@ -206,49 +193,49 @@ namespace FastDoIt4core
                 IWebElement element0 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingFirstName")));
                 element0.SendKeys(ProfileInfoList[1]);
             }
-            catch (Exception ex) { AddErrorLog(ex); }
+            catch (Exception ex) { AddErrorLog(ex); } // first name
 
             try
             {
                 IWebElement element1 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingLastName")));
                 element1.SendKeys(ProfileInfoList[2]);
             }
-            catch (Exception ex) { AddErrorLog(ex); }
+            catch (Exception ex) { AddErrorLog(ex); } // last name
 
             try
             {
                 IWebElement element2 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.Email")));
                 element2.SendKeys(ProfileInfoList[3]);
             }
-            catch (Exception ex) { AddErrorLog(ex); }
+            catch (Exception ex) { AddErrorLog(ex); } // e-mail
 
             try
             {
                 IWebElement element3 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingAddress1")));
                 element3.SendKeys(ProfileInfoList[4]);
             }
-            catch (Exception ex) { AddErrorLog(ex); }
+            catch (Exception ex) { AddErrorLog(ex); } // address
 
             try
             {
                 IWebElement element4 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingCity")));
                 element4.SendKeys(ProfileInfoList[5]);
             }
-            catch (Exception ex) { AddErrorLog(ex); }
+            catch (Exception ex) { AddErrorLog(ex); } // city
 
             try
             {
                 IWebElement element5 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingZIP")));
                 element5.SendKeys(ProfileInfoList[6]);
             }
-            catch (Exception ex) { AddErrorLog(ex); }
+            catch (Exception ex) { AddErrorLog(ex); } // zip code
 
             try
             {
                 IWebElement element6 = wait.Until(d => driver.FindElement(By.Name("CheckoutData.BillingPhone")));
                 element6.SendKeys(ProfileInfoList[7]);
             }
-            catch (Exception ex) { AddErrorLog(ex); }
+            catch (Exception ex) { AddErrorLog(ex); } // phone
             #endregion
 
             //go to the card form iframe and push pay button
@@ -295,13 +282,12 @@ namespace FastDoIt4core
                     {
                         if (isDebug)
                         {
-                            Console.WriteLine("`PAY AND PLACE ORDER` button `kak-by` clicked");
+                            Console.WriteLine("`PAY AND PLACE ORDER` button `kak-by` (ponaroshku) clicked");
                         }
                         else
                         {
                             btns[i].Click();
                         }
-
                         return;
                     }
                 }
@@ -314,7 +300,7 @@ namespace FastDoIt4core
         private static void AddErrorLog(Exception ex)
         {
             Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
-            System.IO.File.AppendAllText("fasterror.log", "Message: "+ex.Message + "\nStack trace: " + ex.StackTrace+"");
+            System.IO.File.AppendAllText("fasterror.log", "Message ===\n "+ex.Message + "\nStack trace: " + ex.StackTrace+"\n driver: " + driver.CurrentWindowHandle + "\ndate-time: " + DateTime.Now.ToString("F") + "----------------");
         }
 
         private static string GetMonth(string month)
