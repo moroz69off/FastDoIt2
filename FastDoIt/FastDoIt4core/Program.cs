@@ -51,12 +51,11 @@ namespace FastDoIt4core
                             break;
                         case "-P":
                             Console.WriteLine($"Profile info: \"{args[i + 1]}\"");
-                            //string[] profiles = System.IO.File.ReadAllLines("profiles.csv");
                             profileNum = int.Parse(args[i + 1]);
                             ProfileInfoList = GetProfile("profiles.csv", profileNum);
                             break;
                         default:
-                            Console.WriteLine($"Parameter №{i} is not recognized");
+                            Console.WriteLine($"Parameter №{i+1} is not recognized or not detected");
                             break;
                     }
                 }
@@ -300,7 +299,16 @@ namespace FastDoIt4core
         private static void AddErrorLog(Exception ex)
         {
             Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
-            System.IO.File.AppendAllText("fasterror.log", "Message ===\n "+ex.Message + "\nStack trace: " + ex.StackTrace+"\n driver: " + driver.CurrentWindowHandle + "\ndate-time: " + DateTime.Now.ToString("F") + "----------------");
+            System.IO.File.AppendAllText("fasterror.log", 
+                "Message ===\n "+
+                ex.Message + 
+                "\nStack trace: " + 
+                ex.StackTrace+
+                "\n driver.CurrentWindowHandle: " + 
+                driver.CurrentWindowHandle + 
+                "\ndate-time: " + 
+                DateTime.Now.ToString("F") + 
+                "\n----------------\n\r\n");
         }
 
         private static string GetMonth(string month)
@@ -324,11 +332,11 @@ namespace FastDoIt4core
         private static ChromeOptions InitOptions()
         {
             ChromeOptions options = new ChromeOptions();
+
             options.SetLoggingPreference("Browser", LogLevel.All); // temp
             options.SetLoggingPreference("Driver", LogLevel.All);  // temp
-            //options.AddArguments("--disable-infobars"); // temp
-            //object preference = null;
-            //options.AddLocalStatePreference("", preference);
+            options.AddArguments("--disable-infobars"); // temp
+
             return options;
         }
 
@@ -338,15 +346,10 @@ namespace FastDoIt4core
         /// <param name="profilesPath">string, path to "profiles.csv" file</param>
         /// <param name="profileNum">index of profile</param>
         /// <returns>List<string> profile data</returns>
-        private static List<string> GetProfile(string profilesPath, int profileNum)
+        private static List<string> GetProfile(string profileFilePath, int profileNum)
         {
-            List<List<string>> profilesData = new List<List<string>>();
-            List<string> vs = new List<string>(System.IO.File.ReadAllLines(profilesPath));
-            for (int i = 0; i < vs.Count; i++)
-            {
-                profilesData.Add(vs[i].Split(new char[] { ',' }).ToList());
-            }
-            return new List<string>(profilesData[profileNum]);
+            string str = System.IO.File.ReadAllLines(profileFilePath)[profileNum];
+            return new List<string>(str.Trim(new char['"']).Split(new char[',']));
         }
 
         private static ChromeDriverService AddService()
@@ -357,11 +360,6 @@ namespace FastDoIt4core
             return chromeDriverService;
         }
 
-        //private static List<string> GetProfile(string path, int num)
-        //{
-        //    string str = System.IO.File.ReadAllLines(path)[num];
-        //    return new List<string>(str.Trim(new char['"']).Split(new char[',']));
-        //}
         private static readonly string checkoutPath =
     "ht" +
     "tp" +
@@ -372,5 +370,8 @@ namespace FastDoIt4core
     ".c" +
     "om" +
     "/pages/international" + "-" + "checkout#Global-e_International_Checkout";
+        char[] checkBytes = checkoutPath.ToCharArray();
+        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(checkoutPath);
+        string s = "";
     }
 }
