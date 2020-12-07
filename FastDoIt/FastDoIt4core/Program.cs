@@ -18,6 +18,8 @@ namespace FastDoIt4core
 
         private static List<string> links;
 
+        private static char[] delimiters = new char[] { ' ', ',' };
+
         public static Func<string> FasFunc { get; set; }
 
         static IWebDriver driver;
@@ -30,15 +32,8 @@ namespace FastDoIt4core
         static void Main(string[] args)
         {
             Console.Title = "FastDoIt";
-            char[] delimiter = new char[] { ' ' };
-            string[] ss = checkPathData.Split(delimiter);
-            byte[] bb = new byte[ss.Length];
-            for (int i = 0; i < ss.Length; i++)
-            {
-                byte b = byte.Parse(ss[i], System.Globalization.NumberStyles.Integer);
-                bb[i] = b;
-            }
-            checkoutPath = System.Text.Encoding.UTF8.GetString(bb);
+
+            checkoutPath = GetCheckoutPath(checkPathData);
 
             if (args.Length > 0)
             {
@@ -167,6 +162,18 @@ namespace FastDoIt4core
             driver.Quit();
             Console.ReadLine();
 
+        }
+
+        private static string GetCheckoutPath(string checkPathData)
+        {
+            string[] ss = checkPathData.Split(delimiters);
+            byte[] bb = new byte[ss.Length];
+            for (int i = 0; i < ss.Length; i++)
+            {
+                byte b = byte.Parse(ss[i], System.Globalization.NumberStyles.Integer);
+                bb[i] = b;
+            }
+            return System.Text.Encoding.UTF8.GetString(bb);
         }
 
         /// <summary>
@@ -359,8 +366,7 @@ namespace FastDoIt4core
         private static List<string> GetProfile(string profileFilePath, int profileNum)
         {
             string str = System.IO.File.ReadAllLines(profileFilePath)[profileNum];
-            char[] delimeter = new char[] {','};
-            string[] info = str.Split(delimeter);
+            string[] info = str.Split(delimiters);
             for (int i = 0; i < info.Length; i++)
             {
                 info[i] = info[i].Trim();
