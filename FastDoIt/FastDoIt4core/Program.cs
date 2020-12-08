@@ -28,6 +28,8 @@ namespace FastDoIt4core
 
         private static int profileNum;
 
+        static string currLink;
+
 
         static void Main(string[] args)
         {
@@ -70,6 +72,8 @@ namespace FastDoIt4core
 
             links = GetLinks();
 
+            currLink = GetNextLink();
+
             ChromeDriverService chromeDriverService = AddService();
 
             ChromeOptions options = InitOptions();
@@ -80,10 +84,10 @@ namespace FastDoIt4core
 
             driver.Manage().Window.Maximize();
 
-            driver.Navigate().GoToUrl(links[0]);
+            driver.Navigate().GoToUrl(currLink);
 
             #region // check that the server has given the good page
-            bool isAgoodResponse = IsGoodResponse(links[0]);
+            bool isAgoodResponse = IsGoodResponse(currLink);
             bool IsGoodResponse(string link) { return true; }
 
             WebDriverWait wait = new WebDriverWait(clock, driver,
@@ -162,6 +166,11 @@ namespace FastDoIt4core
             driver.Quit();
             Console.ReadLine();
 
+        }
+
+        private static string GetNextLink()
+        {
+            return links[0];
         }
 
         private static string GetCheckoutPath(string checkPathData)
