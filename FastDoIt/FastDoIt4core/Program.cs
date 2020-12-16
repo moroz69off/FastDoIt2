@@ -361,7 +361,7 @@ namespace FastDoIt4core
 
             options.SetLoggingPreference("Browser", LogLevel.All); // temp
             options.SetLoggingPreference("Driver", LogLevel.All);  // temp
-          //options.AddArguments("--disable-infobars"); // temp
+          options.AddArguments("--disable-infobars"); // temp
 
             return options;
         }

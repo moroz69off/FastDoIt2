@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <ApplicationIcon>FastIcon2.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
