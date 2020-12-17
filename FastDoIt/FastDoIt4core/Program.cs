@@ -207,7 +207,7 @@ namespace FastDoIt4core
 
             WebDriverWait wait = new WebDriverWait(clock, driver,
                 TimeSpan.FromSeconds(12),
-                TimeSpan.FromMilliseconds(100)
+                TimeSpan.FromMilliseconds(333)
                 );
             //go to the address form iframe
             #region address form iframe
