@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.Unicode;
 
 namespace FastDoIt4core
 {
@@ -62,7 +63,7 @@ namespace FastDoIt4core
                             ProfileInfoList = GetProfile("profiles.csv", profileNum);
                             break;
                         default:
-                            Console.WriteLine($"Parameter №{i+1} is not recognized or not detected");
+                            Console.WriteLine($"Parameter №{i + 1} is not recognized or not detected");
                             break;
                     }
                 }
@@ -126,7 +127,7 @@ namespace FastDoIt4core
                     ReadOnlyCollection<IWebElement> webElements = driver.FindElements(By.ClassName("swatch-element"));
                     for (int i = 0; i < webElements.Count; i++)
                     {
-                        if (webElements[i].Text == ProfileInfoList[0])/////////////////////
+                        if (webElements[i].Text == ProfileInfoList[0])
                         {
                             webElements[i].Click();
                         }
@@ -137,7 +138,7 @@ namespace FastDoIt4core
                 try //add-to-cart btn
                 {
                     driver.FindElement(By.ClassName("product-form__add-to-cart")).Click();
-                    System.Threading.Thread.Sleep(777);
+                    System.Threading.Thread.Sleep(2222);
                 }
                 catch (Exception ex) { AddErrorLog(ex); }//add-to-cart btn
 
@@ -205,12 +206,12 @@ namespace FastDoIt4core
             Console.WriteLine("Fill form...");
 
             WebDriverWait wait = new WebDriverWait(clock, driver,
-                TimeSpan.FromSeconds(5),
+                TimeSpan.FromSeconds(12),
                 TimeSpan.FromMilliseconds(100)
                 );
             //go to the address form iframe
             #region address form iframe
-            var durl = driver.Url;//temp
+            string durl = driver.Url;//temp
             var iframeFormAddressDriver = wait.Until(d => driver.SwitchTo().Frame("Intrnl_CO_Container"));
 
             try
@@ -282,7 +283,7 @@ namespace FastDoIt4core
                 buttonka.Click();
             }
             catch (Exception ex) { AddErrorLog(ex); } // month
-
+            
             try // year
             {
                 string year = ProfileInfoList[9].Remove(0, 3);
@@ -321,11 +322,14 @@ namespace FastDoIt4core
             catch (Exception ex) { AddErrorLog(ex); } // PAY AND PLACE ORDER
             #endregion
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ex"></param>
         private static void AddErrorLog(Exception ex)
         {
             Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
-            System.IO.File.AppendAllText("fasterror.log", 
+            System.IO.File.AppendAllText("fasterror.log.txt", 
                 "Message ===\n "+
                 ex.Message + 
                 "\nStack trace: " + 
@@ -359,9 +363,9 @@ namespace FastDoIt4core
         {
             ChromeOptions options = new ChromeOptions();
 
-            options.SetLoggingPreference("Browser", LogLevel.All); // temp
-            options.SetLoggingPreference("Driver", LogLevel.All);  // temp
-          options.AddArguments("--disable-infobars"); // temp
+            options.SetLoggingPreference("Browser", LogLevel.All);
+            options.SetLoggingPreference("Driver", LogLevel.All);
+            options.AddArguments("--disable-infobars");
 
             return options;
         }
