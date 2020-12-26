@@ -81,7 +81,7 @@ namespace FastDoIt4core
 
             driver = new ChromeDriver(chromeDriverService, options);
 
-            var wait10s = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            WebDriverWait wait10s = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
 
             driver.Manage().Window.Maximize();
 
